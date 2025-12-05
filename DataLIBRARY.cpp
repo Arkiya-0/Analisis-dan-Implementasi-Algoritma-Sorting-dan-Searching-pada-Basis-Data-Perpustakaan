@@ -41,7 +41,7 @@ void downloaddata(const string &url, const string &outputFile){
 
 //LOAD DATA ( UNFINISH )
 void loadLibraryData(const string &filename) {
-    string googleurl = "https://script.google.com/macros/s/AKfycbw3m1qtDbMxEHwvclLt5aNdfX3a0O6aOXSzLz_zXD03HY4XAu_lXSGvE5J541q3K_05dw/exec";
+    string googleurl = "https://script.google.com/macros/s/AKfycbzDwaKzitZtyhmpo11GPN8tAMOYKytecK7j7AQTE1FN9lkZtz3uiZLM8gw02qaZA8WQ/exec";
     cout << "Mengambil Data Dari Spreadshet...\n";
     downloaddata(googleurl, filename);
     ifstream file(filename);
@@ -152,10 +152,6 @@ void menu() {
         }
     } while (pilihan != 2);
 }
-
-
-
-
 
 int main() {
     cout << "===== SISTEM PERPUSTAKAAN C++ =====\n";
