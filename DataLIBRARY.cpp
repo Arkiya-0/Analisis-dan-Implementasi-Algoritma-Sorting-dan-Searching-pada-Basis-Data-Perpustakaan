@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 struct Book {
@@ -11,6 +12,7 @@ struct Book {
     int tahun;
     string judul;
     string genre;
+    string rak; //POSISI
 };
 
 //DATABASE
@@ -30,8 +32,18 @@ void writeLog(const string &action) {
     logFile.close();
 }
 
+//DOWNLOAD DATA
+void downloaddata(const string &url, const string &outputFile){
+    string command = "curl -L \"" + url + "\" -o " + outputFile + " --silent";
+    system(command.c_str());
+    cout << "Data diunduh dari Google Sheets...\n";
+}
+
 //LOAD DATA ( UNFINISH )
 void loadLibraryData(const string &filename) {
+    string googleurl = "https://script.google.com/macros/s/AKfycbw3m1qtDbMxEHwvclLt5aNdfX3a0O6aOXSzLz_zXD03HY4XAu_lXSGvE5J541q3K_05dw/exec";
+    cout << "Mengambil Data Dari Spreadshet...\n";
+    downloaddata(googleurl, filename);
     ifstream file(filename);
     string line;
 
@@ -44,13 +56,14 @@ void loadLibraryData(const string &filename) {
 
     while (getline(file, line)) {
         stringstream ss(line);
-        string isbn, author, year, titjudulle, genre;
+        string isbn, author, year, judul, genre, rak;
 
         getline(ss, isbn, ',');
         getline(ss, author, ',');
         getline(ss, year, ',');
         getline(ss, judul, ',');
         getline(ss, genre, ',');
+        getline(ss, rak, ',');
 
         Book b;
         b.isbn = isbn;
@@ -58,6 +71,7 @@ void loadLibraryData(const string &filename) {
         b.tahun = stoi(year);
         b.judul = judul;
         b.genre = genre;
+        b.rak = rak;
 
         libraryDB.push_back(b);
     }
@@ -91,7 +105,7 @@ void searchBook() {
     for (auto &b : libraryDB) {
         string target;
 
-        if (choice == 1) target = b.title;
+        if (choice == 1) target = b.judul;
         else if (choice == 2) target = b.author;
         else if (choice == 3) target = b.genre;
         else if (choice == 4) target = favGenre;
@@ -99,10 +113,11 @@ void searchBook() {
 
         if (target.find(key) != string::npos) {
             cout << "\nISBN  : " << b.isbn << endl;
-            cout << "Judul : " << b.title << endl;
+            cout << "Judul : " << b.judul << endl;
             cout << "Author: " << b.author << endl;
             cout << "Tahun : " << b.tahun << endl;
             cout << "Genre : " << b.genre << endl;
+            cout << "Rak : " << b.rak << endl;
             found = true;
         }
     }
@@ -139,6 +154,9 @@ void menu() {
 }
 
 
+
+
+
 int main() {
     cout << "===== SISTEM PERPUSTAKAAN C++ =====\n";
     
@@ -150,7 +168,7 @@ int main() {
 
     writeLog("Login User");
 
-    // Load CSV
+    // Load CSV ( UNFINISHED )
     loadLibraryData("library_books_200.csv");
 
     // Masuk Menu
