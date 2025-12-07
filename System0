@@ -1,0 +1,203 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <fstream>
+using namespace std;
+
+struct Book {
+    string isbn;
+    string author;
+    int tahun;
+    string judul;
+    string genre;
+    string rak;
+};
+
+//data
+vector<Book> libraryDB = {
+    {"978-602-8803-19-1", "Andrea Hirata", 2005, "Laskar Pelangi", "Roman", "A1"},
+    {"978-979-9731-27-2", "Pramoedya Ananta Toer", 1980, "Bumi Manusia", "Sejarah", "A1"},
+    {"978-602-412-518-9", "Henry Manampiring", 2018, "Filosofi Teras", "Self-Help", "B1"},
+    {"978-623-00-5001-2", "Andi Hakim", 2023, "Belajar Python untuk Pemula", "Pemrograman", "C1"},
+    {"978-602-03-3316-2", "Yuval Noah Harari", 2017, "Sapiens: A Brief History of Humankind", "Sejarah", "D1"},
+    {"978-602-8803-01-6", "Dee Lestari", 2009, "Perahu Kertas", "Roman", "A2"},
+    {"978-979-1300-99-9", "M.C. Ricklefs", 2008, "Sejarah Indonesia Modern 1200-2008", "Sejarah", "D2"},
+    {"978-602-424-659-4", "Matt Haig", 2021, "The Midnight Library", "Fantasi", "A2"},
+    {"978-979-666-072-8", "Hasan Alwi, dkk.", 2017, "Tata Bahasa Baku Bahasa Indonesia", "Bahasa", "E1"},
+    {"978-979-22-9908-0", "Ny. Liem", 2019, "Resep Masakan Nusantara Lengkap", "Kuliner", "F1"},
+    {"978-623-00-0909-6", "DK Publishing", 2020, "The Economics Book", "Ekonomi", "C2"},
+    {"978-979-22-6750-8", "Eka Kurniawan", 2002, "Cantik Itu Luka", "Sastra", "A1"},
+    {"978-979-688-518-3", "Halliday & Resnick", 1999, "Fisika Dasar Jilid 1", "Fisika", "D3"},
+    {"978-979-467-074-9", "Sulaiman Rasjid", 2018, "Fiqih Islam Lengkap", "Fiqih", "E2"},
+    {"978-602-452-999-0", "Rio Wibowo", 2022, "Panduan Lengkap Fotografi Digital", "Fotografi", "F1"},
+    {"978-602-8803-24-5", "Andrea Hirata", 2006, "Sang Pemimpi", "Roman", "A3"},
+    {"978-602-03-8826-1", "James Clear", 2019, "Atomic Habits", "Self-Help", "B1"},
+    {"978-979-95988-3-2", "Cindy Adams", 2010, "Biografi Soekarno: Penyambung Lidah Rakyat", "Biografi", "D2"},
+    {"978-623-7313-09-5", "Iwan Setiawan", 2021, "Jaringan Komputer dan Internet", "Jaringan", "C1"},
+    {"978-602-7870-00-1", "Pidi Baiq", 2014, "Dilan 1990", "Roman", "A3"},
+    {"978-979-075-167-2", "Purcell, Varberg, dkk.", 2002, "Kalkulus Jilid 1", "Matematika", "D3"},
+    {"978-979-692-001-9", "W. Gerungan", 2010, "Psikologi Umum", "Psikologi", "B2"},
+    {"978-602-424-694-5", "Leila S. Chudori", 2017, "Laut Bercerita", "Fiksi", "A1"},
+    {"978-602-03-3162-4", "Robert Kiyosaki", 2000, "Rich Dad Poor Dad", "Keuangan", "C2"},
+    {"978-979-22-2622-5", "Trinity", 2007, "Backpacker Dunia: Keliling Asia", "Traveling", "F2"},
+    {"978-979-3210-67-1", "Habiburrahman El Shirazy", 2004, "Ayat-Ayat Cinta", "Fiksi", "A3"}
+};
+
+string currentUser;
+string favGenre;
+
+//search eng
+void searchBook() {
+    int choice;
+    cout << "\n=== MENU SEARCH ===\n";
+    cout << "1. Cari berdasarkan Judul\n";
+    cout << "2. Cari berdasarkan Author\n";
+    cout << "3. Cari berdasarkan Genre\n";
+    cout << "4. Cari berdasarkan Genre Favorit Anda\n";
+    cout << "Pilihan: ";
+    cin >> choice;
+    cin.ignore();
+
+    string key;
+    if (choice != 4) {
+        cout << "Masukkan kata kunci: ";
+        getline(cin, key);
+    } else {
+        key = favGenre;
+        cout << "Mencari berdasarkan genre favorit: " << key << endl;
+    }
+
+    bool found = false;
+
+    cout << "\n=== HASIL PENCARIAN ===\n";
+
+    for (auto &b : libraryDB) {
+        string target;
+        if (choice == 1) target = b.judul;
+        else if (choice == 2) target = b.author;
+        else if (choice == 3) target = b.genre;
+        else if (choice == 4) target = b.genre;
+        else return;
+
+        if (target.find(key) != string::npos) {
+            cout << "\nISBN  : " << b.isbn << endl;
+            cout << "Judul : " << b.judul << endl;
+            cout << "Author: " << b.author << endl;
+            cout << "Tahun : " << b.tahun << endl;
+            cout << "Genre : " << b.genre << endl;
+            cout << "Rak   : " << b.rak << endl;
+            found = true;
+        }
+    }
+
+    if (!found) cout << "Tidak ada buku yang cocok.\n";
+
+    writeLog("Search Book: " + key);
+}
+
+//list buku
+void listAllBooks() {
+    cout << "\n=== SEMUA BUKU ===\n";
+    for (auto &b : libraryDB) {
+        cout << "\nISBN  : " << b.isbn << endl;
+        cout << "Judul : " << b.judul << endl;
+        cout << "Author: " << b.author << endl;
+        cout << "Tahun : " << b.tahun << endl;
+        cout << "Genre : " << b.genre << endl;
+        cout << "Rak   : " << b.rak << endl;
+    }
+    writeLog("List All Books");
+}
+
+//Sorting
+void sortingMenu() {
+    int c;
+    cout << "\n=== MENU SORTING ===\n";
+    cout << "1. Sort Judul (A-Z)\n";
+    cout << "2. Sort Tahun (Terlama → Terbaru)\n";
+    cout << "3. Sort Author (A-Z)\n";
+    cout << "Pilihan: ";
+    cin >> c;
+
+    if (c == 1) {
+        sort(libraryDB.begin(), libraryDB.end(), 
+            [](Book a, Book b){ return a.judul < b.judul; });
+    }
+    else if (c == 2) {
+        sort(libraryDB.begin(), libraryDB.end(),
+            [](Book a, Book b){ return a.tahun < b.tahun; });
+    }
+    else if (c == 3) {
+        sort(libraryDB.begin(), libraryDB.end(),
+            [](Book a, Book b){ return a.author < b.author; });
+    }
+    else return;
+
+    cout << "\nSorting selesai!\n";
+    writeLog("Sorting executed");
+}
+
+//filt tahun
+void filterTahun() {
+    int minYear;
+    cout << "Tampilkan buku dari tahun >= ";
+    cin >> minYear;
+
+    cout << "\n=== HASIL FILTER ===\n";
+
+    bool found = false;
+    for (auto &b : libraryDB) {
+        if (b.tahun >= minYear) {
+            cout << "\n" << b.judul << " (" << b.tahun << ")" << endl;
+            found = true;
+        }
+    }
+
+    if (!found) cout << "Tidak ada buku dengan tahun tersebut.\n";
+
+    writeLog("Filter Tahun >= " + to_string(minYear));
+}
+
+//menu
+void menu() {
+    int pilihan;
+    do {
+        cout << "\n=== MENU UTAMA ===\n";
+        cout << "1. Pencarian Buku\n";
+        cout << "2. List Semua Buku\n";
+        cout << "3. Sorting Buku\n";
+        cout << "4. Filter Tahun Buku\n";
+        cout << "5. Keluar\n";
+        cout << "Pilihan: ";
+        cin >> pilihan;
+        cin.ignore();
+
+        switch (pilihan) {
+        case 1: searchBook(); break;
+        case 2: listAllBooks(); break;
+        case 3: sortingMenu(); break;
+        case 4: filterTahun(); break;
+        case 5:
+            cout << "Keluar...\n";
+            writeLog("Logout");
+            break;
+        }
+    } while (pilihan != 5);
+}
+
+//login
+int main() {
+    cout << "===== SISTEM PERPUSTAKAAN C++ =====\n";
+    
+    cout << "Masukkan username: ";
+    getline(cin, currentUser);
+
+    cout << "Masukkan genre favorit Anda: ";
+    getline(cin, favGenre);
+
+    writeLog("Login User");
+
+    menu();
+    return 0;
+}
