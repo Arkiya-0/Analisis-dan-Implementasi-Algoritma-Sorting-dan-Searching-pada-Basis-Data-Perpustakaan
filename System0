@@ -179,7 +179,7 @@ void menu() {
         case 3: sortingMenu(); break;
         case 4: filterTahun(); break;
         case 5:
-            cout << "\nTerima kasih telah menggunakan Sistem Perpustakaan!\n";
+            cout << "\nTerima Kasih Telah Memakai Layanan Kami\n";
             cout << "Sampai jumpa, " << currentUser << "!\n";
             break;
         default:
