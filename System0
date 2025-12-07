@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <fstream>
 using namespace std;
 
 struct Book {
@@ -14,7 +13,7 @@ struct Book {
     string rak;
 };
 
-//data
+// Database buku
 vector<Book> libraryDB = {
     {"978-602-8803-19-1", "Andrea Hirata", 2005, "Laskar Pelangi", "Roman", "A1"},
     {"978-979-9731-27-2", "Pramoedya Ananta Toer", 1980, "Bumi Manusia", "Sejarah", "A1"},
@@ -47,7 +46,7 @@ vector<Book> libraryDB = {
 string currentUser;
 string favGenre;
 
-//search eng
+// search menu
 void searchBook() {
     int choice;
     cout << "\n=== MENU SEARCH ===\n";
@@ -69,15 +68,13 @@ void searchBook() {
     }
 
     bool found = false;
-
     cout << "\n=== HASIL PENCARIAN ===\n";
 
     for (auto &b : libraryDB) {
         string target;
         if (choice == 1) target = b.judul;
         else if (choice == 2) target = b.author;
-        else if (choice == 3) target = b.genre;
-        else if (choice == 4) target = b.genre;
+        else if (choice == 3 || choice == 4) target = b.genre;
         else return;
 
         if (target.find(key) != string::npos) {
@@ -92,11 +89,9 @@ void searchBook() {
     }
 
     if (!found) cout << "Tidak ada buku yang cocok.\n";
-
-    writeLog("Search Book: " + key);
 }
 
-//list buku
+//List Buku
 void listAllBooks() {
     cout << "\n=== SEMUA BUKU ===\n";
     for (auto &b : libraryDB) {
@@ -107,7 +102,6 @@ void listAllBooks() {
         cout << "Genre : " << b.genre << endl;
         cout << "Rak   : " << b.rak << endl;
     }
-    writeLog("List All Books");
 }
 
 //Sorting
@@ -115,7 +109,7 @@ void sortingMenu() {
     int c;
     cout << "\n=== MENU SORTING ===\n";
     cout << "1. Sort Judul (A-Z)\n";
-    cout << "2. Sort Tahun (Terlama → Terbaru)\n";
+    cout << "2. Sort Tahun (Lama → Baru)\n";
     cout << "3. Sort Author (A-Z)\n";
     cout << "Pilihan: ";
     cin >> c;
@@ -123,22 +117,25 @@ void sortingMenu() {
     if (c == 1) {
         sort(libraryDB.begin(), libraryDB.end(), 
             [](Book a, Book b){ return a.judul < b.judul; });
+        cout << "\nDiurutkan berdasarkan Judul (A-Z)!\n";
     }
     else if (c == 2) {
         sort(libraryDB.begin(), libraryDB.end(),
             [](Book a, Book b){ return a.tahun < b.tahun; });
+        cout << "\nDiurutkan berdasarkan Tahun (Terlama → Terbaru)!\n";
     }
     else if (c == 3) {
         sort(libraryDB.begin(), libraryDB.end(),
             [](Book a, Book b){ return a.author < b.author; });
+        cout << "\nDiurutkan berdasarkan Author (A-Z)!\n";
     }
-    else return;
-
-    cout << "\nSorting selesai!\n";
-    writeLog("Sorting executed");
+    else {
+        cout << "Pilihan tidak valid!\n";
+        return;
+    }
 }
 
-//filt tahun
+//Sorting Tahun
 void filterTahun() {
     int minYear;
     cout << "Tampilkan buku dari tahun >= ";
@@ -149,25 +146,28 @@ void filterTahun() {
     bool found = false;
     for (auto &b : libraryDB) {
         if (b.tahun >= minYear) {
-            cout << "\n" << b.judul << " (" << b.tahun << ")" << endl;
+            cout << "\nJudul : " << b.judul << endl;
+            cout << "Tahun : " << b.tahun << endl;
+            cout << "Author: " << b.author << endl;
+            cout << "Genre : " << b.genre << endl;
             found = true;
         }
     }
 
-    if (!found) cout << "Tidak ada buku dengan tahun tersebut.\n";
-
-    writeLog("Filter Tahun >= " + to_string(minYear));
+    if (!found) cout << "Mohon Maaf!! Buku Tidak Ditemukan\n";
 }
 
-//menu
+//Main menu
 void menu() {
     int pilihan;
     do {
-        cout << "\n=== MENU UTAMA ===\n";
+        cout << "\n=============================\n";
+        cout << "=== MENU UTAMA ===\n";
+        cout << "=============================\n";
         cout << "1. Pencarian Buku\n";
         cout << "2. List Semua Buku\n";
-        cout << "3. Sorting Buku\n";
-        cout << "4. Filter Tahun Buku\n";
+        cout << "3. Urutkan Buku\n";
+        cout << "4. Filter Tahun\n";
         cout << "5. Keluar\n";
         cout << "Pilihan: ";
         cin >> pilihan;
@@ -179,24 +179,29 @@ void menu() {
         case 3: sortingMenu(); break;
         case 4: filterTahun(); break;
         case 5:
-            cout << "Keluar...\n";
-            writeLog("Logout");
+            cout << "\nTerima kasih telah menggunakan Sistem Perpustakaan!\n";
+            cout << "Sampai jumpa, " << currentUser << "!\n";
             break;
+        default:
+            cout << "Pilihan tidak valid! Silakan coba lagi.\n";
         }
     } while (pilihan != 5);
 }
 
-//login
+// Main Program
 int main() {
+    cout << "========================================\n";
     cout << "===== SISTEM PERPUSTAKAAN C++ =====\n";
+    cout << "========================================\n";
     
-    cout << "Masukkan username: ";
+    cout << "\nMasukkan username: ";
     getline(cin, currentUser);
 
     cout << "Masukkan genre favorit Anda: ";
     getline(cin, favGenre);
 
-    writeLog("Login User");
+    cout << "\nSelamat datang, " << currentUser << "!\n";
+    cout << "Genre favorit Anda: " << favGenre << endl;
 
     menu();
     return 0;
